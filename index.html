@@ -588,6 +588,15 @@
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
+        /* Restrict all images directly inside .article-item to 320x320 */
+.article-item img {
+    width: 320px;
+    height: 320px;
+    object-fit: cover; /* Ensures the image fills the area without stretching */
+    display: block; /* Ensures proper layout and removal of any default inline spacing */
+    border-radius: 15px; 
+    margin: 0 auto 20px auto; /* Centers the image and adds spacing below */
+        }
 
         /* Toolkit Section */
         .toolkit {
