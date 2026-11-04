@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: victor-portfolio-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    pythonVersion: "3.11" # Forces a stable Python version for AI libraries
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: WHATSAPP_NUMBER
+        sync: false
