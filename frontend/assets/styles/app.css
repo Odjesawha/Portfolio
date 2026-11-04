@@ -868,3 +868,43 @@ body.dark-skin .section.hero-started .info-list ul li .value { color: var(--vo-g
 @media print {
   .vo-chat, .vo-wa, .vo-to-top, .header, .cursor, .preloader { display: none !important; }
 }
+
+/* ==========================================================================
+   Skills Section Fix (Line height, overlapping percentages, spacing)
+   ========================================================================== */
+.skills-item .title {
+  line-height: 1.4 !important;
+  padding-right: 65px; /* Reserve space for the absolute percentage */
+  min-height: 42px; /* Reserve space for two lines */
+  margin-bottom: 8px;
+}
+
+.skills-item .desc {
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.skills-item {
+  margin-bottom: 32px;
+}
+
+/* Tablet spacing */
+@media (max-width: 991px) {
+  .skills-item {
+    margin-bottom: 28px;
+  }
+  .skills-item .title {
+    min-height: 40px;
+  }
+}
+
+/* Mobile spacing */
+@media (max-width: 599px) {
+  .skills-item {
+    margin-bottom: 24px;
+  }
+  .skills-item .title {
+    padding-right: 50px;
+    min-height: auto;
+  }
+}
