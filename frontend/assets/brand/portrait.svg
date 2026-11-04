@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080" role="img" aria-label="Victor Odjesawha portrait illustration">
+  <defs>
+    <linearGradient id="halo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8a4a31" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#8a4a31" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d3b26"/>
+      <stop offset="1" stop-color="#062318"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a5a3b"/>
+      <stop offset="1" stop-color="#6d4229"/>
+    </linearGradient>
+    <clipPath id="frame">
+      <circle cx="540" cy="545" r="430"/>
+    </clipPath>
+  </defs>
+
+  <circle cx="540" cy="545" r="430" fill="url(#halo)"/>
+  <circle cx="540" cy="545" r="430" fill="none" stroke="#8a4a31" stroke-opacity=".35" stroke-width="2"/>
+  <circle cx="540" cy="545" r="360" fill="none" stroke="#8a4a31" stroke-opacity=".18" stroke-width="1.5" stroke-dasharray="2 12"/>
+
+  <g clip-path="url(#frame)">
+    <!-- shoulders / torso -->
+    <path d="M190 1080c18-190 132-300 350-300s332 110 350 300z" fill="url(#shirt)"/>
+    <!-- collar accent -->
+    <path d="M470 790l70 86 70-86 46 34-116 150-116-150z" fill="#8a4a31"/>
+    <!-- neck -->
+    <path d="M486 690h108v118c0 30-24 54-54 54s-54-24-54-54z" fill="url(#skin)"/>
+    <path d="M486 726c34 22 74 22 108 0v40c-34 20-74 20-108 0z" fill="#000" opacity=".12"/>
+    <!-- head -->
+    <ellipse cx="540" cy="560" rx="132" ry="150" fill="url(#skin)"/>
+    <!-- ears -->
+    <ellipse cx="406" cy="570" rx="22" ry="34" fill="url(#skin)"/>
+    <ellipse cx="674" cy="570" rx="22" ry="34" fill="url(#skin)"/>
+    <!-- hair -->
+    <path d="M404 540c-8-96 48-172 136-172s144 76 136 172c-14-34-30-54-52-66-36 18-132 20-168 2-22 12-38 30-52 64z" fill="#141414"/>
+    <path d="M408 520c22-66 78-102 132-102s110 36 132 102c-28-26-72-40-132-40s-104 14-132 40z" fill="#242424"/>
+    <!-- brows -->
+    <path d="M470 536c18-10 38-10 54-2" fill="none" stroke="#141414" stroke-width="9" stroke-linecap="round"/>
+    <path d="M556 534c16-8 36-8 54 2" fill="none" stroke="#141414" stroke-width="9" stroke-linecap="round"/>
+    <!-- eyes -->
+    <ellipse cx="499" cy="568" rx="10" ry="12" fill="#141414"/>
+    <ellipse cx="581" cy="568" rx="10" ry="12" fill="#141414"/>
+    <!-- nose -->
+    <path d="M540 576v40c0 8-8 12-16 14" fill="none" stroke="#000" stroke-opacity=".22" stroke-width="7" stroke-linecap="round"/>
+    <!-- smile -->
+    <path d="M498 646c24 22 60 22 84 0" fill="none" stroke="#2b1a12" stroke-width="9" stroke-linecap="round"/>
+    <!-- beard hint -->
+    <path d="M452 620c10 58 42 96 88 96s78-38 88-96c-16 64-50 104-88 104s-72-40-88-104z" fill="#141414" opacity=".28"/>
+    <!-- accent glasses -->
+    <g fill="none" stroke="#8a4a31" stroke-width="7">
+      <rect x="454" y="542" width="86" height="56" rx="18"/>
+      <rect x="540" y="542" width="86" height="56" rx="18"/>
+      <path d="M540 566h0"/>
+    </g>
+  </g>
+
+  <!-- floating accent dots -->
+  <circle cx="880" cy="330" r="16" fill="#8a4a31"/>
+  <circle cx="210" cy="380" r="9" fill="#8a4a31" opacity=".6"/>
+  <circle cx="905" cy="760" r="7" fill="#8a4a31" opacity=".5"/>
+  <path d="M170 700c40-26 80-26 120 0" fill="none" stroke="#8a4a31" stroke-width="5" stroke-linecap="round" opacity=".5"/>
+</svg>

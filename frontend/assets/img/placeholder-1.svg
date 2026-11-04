@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g0" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8a4a31"/>
+      <stop offset="1" stop-color="#04240f"/>
+    </linearGradient>
+    <pattern id="p0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0v40" fill="none" stroke="#ffffff" stroke-opacity=".08" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="800" fill="url(#g0)"/>
+  <rect width="1200" height="800" fill="url(#p0)"/>
+  <circle cx="147" cy="201" r="91" fill="#ffffff" opacity="0.07"/>
+<circle cx="358" cy="374" r="144" fill="#04240f" opacity="0.06"/>
+<circle cx="569" cy="547" r="197" fill="#ffffff" opacity="0.07"/>
+<circle cx="780" cy="720" r="90" fill="#04240f" opacity="0.06"/>
+<circle cx="991" cy="193" r="143" fill="#ffffff" opacity="0.07"/>
+<circle cx="102" cy="366" r="196" fill="#04240f" opacity="0.06"/>
+  <g opacity=".95">
+    <rect x="72" y="72" width="96" height="96" rx="26" fill="#c8f0d8" fill-opacity=".18" stroke="#c8f0d8" stroke-opacity=".45"/>
+    <text x="120" y="136" text-anchor="middle" font-family="Jost,'Segoe UI',Arial,sans-serif" font-size="36" font-weight="700" fill="#c8f0d8">VO</text>
+  </g>
+  <text x="72" y="660" font-family="Jost,'Segoe UI',Arial,sans-serif" font-size="27" letter-spacing="8" fill="#c8f0d8" fill-opacity=".75">VICTOR ODJESAWHA</text>
+  <text x="72" y="700" font-family="Jost,'Segoe UI',Arial,sans-serif" font-size="20" letter-spacing="4" fill="#c8f0d8" fill-opacity=".45">DIGITAL &amp; GROWTH MARKETING</text>
+  <text x="1128" y="128" text-anchor="end" font-family="Jost,'Segoe UI',Arial,sans-serif" font-size="88" font-weight="700" fill="#c8f0d8" fill-opacity=".12">01</text>
+</svg>

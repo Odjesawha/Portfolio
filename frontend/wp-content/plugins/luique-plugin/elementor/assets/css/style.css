@@ -1,0 +1,22 @@
+.elementor-editor-active .scrolla-element-anim-1 {
+	opacity: 1;
+	transform: translate3d(0,0,0);
+}
+.elementor-editor-active .header {
+  display: none;
+}
+.elementor-editor-active .swiper-slide .testimonials-item {
+	opacity: 1;
+	transform: scale(1);
+}
+.elementor-editor-active .splitting-text-anim-1 .char,
+.elementor-editor-active .splitting-text-anim-1 .word,
+.elementor-editor-active .splitting-text-anim-1 .line,
+.elementor-editor-active .splitting-text-anim-2 .char,
+.elementor-editor-active .splitting-text-anim-2 .word,
+.elementor-editor-active .splitting-text-anim-2 .line {
+	-webkit-transform: translate(0, 0);
+	-ms-transform: translate(0, 0);
+	transform: translate(0, 0);
+	opacity: 1;
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 825 200" width="825" height="200" role="img" aria-label="Victor Odjesawha">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8a4a31"/>
+      <stop offset="1" stop-color="#6c4327"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="24" width="152" height="152" rx="42" fill="url(#lg)"/>
+  <path d="M46 66h22l18 52 18-52h22l-30 78H76L46 66z" fill="#ffffff"/>
+  <path d="M118 66h20v78h-20z" fill="#ffffff" opacity=".55"/>
+  <text x="190" y="104" font-family="Jost, 'Segoe UI', Arial, sans-serif" font-size="58" font-weight="300" letter-spacing="6" fill="#241a14">VICTOR</text>
+  <text x="190" y="158" font-family="Jost, 'Segoe UI', Arial, sans-serif" font-size="42" font-weight="700" letter-spacing="3" fill="#241a14">ODJESAWHA</text>
+</svg>
