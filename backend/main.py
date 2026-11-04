@@ -47,7 +47,7 @@ FALLBACK_PRICING = [
 ]
 
 # ---- App ----
-app = FastAPI(title="Kevs Portfolio AI")
+app = FastAPI(title="Veektor's Portfolio AI")
 app.add_middleware(CORSMiddleware, allow_origins=ALLOWED_ORIGINS,
                    allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 logging.basicConfig(level=logging.INFO)
@@ -85,7 +85,7 @@ THANKS = {"thanks","thank you","thank you so much","thx","ty","cheers"}
 BYES = {"bye","goodbye","see you","see ya","later","ciao","take care"}
 
 GREETING_RESPONSE = (
-    "Hello! I'm Kevs AI — Victor's portfolio assistant. 👋\n\n"
+    "Hello! I'm Veektor — Victor's portfolio AI assistant. 👋\n\n"
     "I can help with:\n• His digital marketing services\n"
     "• His skills (SEO, paid ads, social media, content, analytics, automation)\n"
     "• Work experience\n• Services & pricing\n• How to hire him\n\n"
@@ -105,7 +105,7 @@ def deterministic_contact(q: str) -> Optional[str]:
     if CONTACT_KW.search(q):
         return (f"Victor's WhatsApp is {WHATSAPP_NUMBER}. "
                 f"Click the WhatsApp button (📱) in this chat to message him directly.\n\n"
-                f"Email: mickevsono@gmail.com")
+                f"Email: victorodjes@gmail.com")
     return None
 
 def deterministic_pricing(q: str) -> Optional[str]:
