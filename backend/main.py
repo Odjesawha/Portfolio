@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from fastembed import TextEmbedding  # <-- REPLACED sentence-transformers HERE
+from fastembed import TextEmbedding
 from groq import Groq
 from supabase import create_client, Client
 
@@ -20,7 +20,9 @@ THRESHOLD       = float(os.environ.get("SIMILARITY_THRESHOLD", "0.15"))
 TEMPERATURE     = float(os.environ.get("TEMPERATURE", "0.2"))
 TOP_K           = int(os.environ.get("TOP_K", "12"))
 ALLOWED_ORIGINS = os.environ.get("ALLOWED_ORIGINS", "*").split(",")
-EMBEDDER_MODEL  = os.environ.get("EMBEDDER_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+
+# Hardcoded to fastembed's official 384-dim model to prevent ValueError
+EMBEDDER_MODEL  = "BAAI/bge-small-en-v1.5"
 
 PRICING_KW = re.compile(r"\b(how much|cost|price|pricing|retainer|fee|quote|bill|charge|budget)\b", re.I)
 CONTACT_KW = re.compile(r"\b(phone|contact|whatsapp|number|reach|call|email|get in touch)\b", re.I)
@@ -154,7 +156,7 @@ def vector_search(q: str, top_k: int = TOP_K) -> List[Dict]:
     db = get_supabase()
     if not db: return []
     
-    # Using fastembed generator
+    # fastembed returns a generator
     emb_generator = get_embedder().embed([q])
     emb = list(emb_generator)[0].tolist()
     
@@ -222,7 +224,6 @@ async def add_chunk(content: str, source_url: str = "manual"):
     db = get_supabase()
     if not db: raise HTTPException(500, "Database not connected")
     
-    # Using fastembed generator
     emb_generator = get_embedder().embed([content])
     emb = list(emb_generator)[0].tolist()
     
@@ -273,10 +274,8 @@ async def reembed(bg: BackgroundTasks):
         if not db: return
         rows = db.table("portfolio_knowledge").select("id,content").execute().data or []
         for r in rows:
-            # Using fastembed generator
             emb_generator = model.embed([r["content"]])
             emb = list(emb_generator)[0].tolist()
-            
             db.table("portfolio_knowledge").update({"embedding": emb}).eq("id", r["id"]).execute()
         logger.info(f"Re-embedded {len(rows)} chunks.")
     bg.add_task(work)
