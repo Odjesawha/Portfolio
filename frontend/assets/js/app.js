@@ -402,7 +402,7 @@
       };
 
       postJSON("https://portfolio-9mv6.onrender.com/api/chat", { message: text, history: history.slice(-8) })
-        .then(function (data) { done(data.reply || localAnswer(text)); })
+        .then(function (data) { done(data.response || localAnswer(text)); })
         .catch(function () { done(localAnswer(text)); });
     }
 
