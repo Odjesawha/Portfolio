@@ -1,6 +1,6 @@
 fastapi
 uvicorn
-sentence-transformers
+fastembed
 supabase>=2.0.0
 beautifulsoup4
 httpx
