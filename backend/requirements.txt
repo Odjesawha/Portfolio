@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+sentence-transformers
+supabase>=2.0.0
+beautifulsoup4
+httpx
+groq
+google.genai
+numpy
+python-multipart
