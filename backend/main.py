@@ -16,7 +16,7 @@ SUPABASE_URL    = os.environ.get("SUPABASE_URL", "")
 SUPABASE_KEY    = os.environ.get("SUPABASE_KEY", "")
 WHATSAPP_NUMBER = os.environ.get("WHATSAPP_NUMBER", "+2347067666205")
 PRODUCTION_HOST = os.environ.get("PRODUCTION_HOST", "")
-THRESHOLD       = float(os.environ.get("SIMILARITY_THRESHOLD", "0.15"))
+THRESHOLD       = float(os.environ.get("SIMILARITY_THRESHOLD", "0.10"))
 TEMPERATURE     = float(os.environ.get("TEMPERATURE", "0.2"))
 TOP_K           = int(os.environ.get("TOP_K", "12"))
 ALLOWED_ORIGINS = os.environ.get("ALLOWED_ORIGINS", "*").split(",")
@@ -27,23 +27,26 @@ EMBEDDER_MODEL  = "BAAI/bge-small-en-v1.5"
 PRICING_KW = re.compile(r"\b(how much|cost|price|pricing|retainer|fee|quote|bill|charge|budget)\b", re.I)
 CONTACT_KW = re.compile(r"\b(phone|contact|whatsapp|number|reach|call|email|get in touch)\b", re.I)
 
+# All prices are intentionally null until Victor confirms real pricing.
+# The deterministic_pricing() handler below produces a "scoped per project"
+# message when no prices are set, so nothing fabricated is ever shown to users.
 FALLBACK_PRICING = [
     {"service_key": "website_design", "service_name": "Website Design",
-     "price_range_low": 250000, "price_range_high": 600000, "is_one_time": True, "note": "One-time setup."},
+     "price_naira": None, "price_range_low": None, "price_range_high": None, "is_one_time": True, "note": ""},
     {"service_key": "website_development", "service_name": "Website Development",
-     "price_range_low": 400000, "price_range_high": 1200000, "is_one_time": True, "note": "One-time setup."},
+     "price_naira": None, "price_range_low": None, "price_range_high": None, "is_one_time": True, "note": ""},
     {"service_key": "brand_identity_development", "service_name": "Brand Identity Development",
-     "price_range_low": 300000, "price_range_high": 800000, "is_one_time": True, "note": "One-time setup."},
+     "price_naira": None, "price_range_low": None, "price_range_high": None, "is_one_time": True, "note": ""},
     {"service_key": "digital_marketing_strategy", "service_name": "Digital Marketing Strategy",
-     "price_range_low": 200000, "price_range_high": 500000, "is_one_time": True, "note": "Consultation / strategy engagement."},
+     "price_naira": None, "price_range_low": None, "price_range_high": None, "is_one_time": True, "note": ""},
     {"service_key": "social_media_management", "service_name": "Social Media Management",
-     "price_range_low": 200000, "price_range_high": 600000, "is_one_time": False, "note": "Tiered monthly retainer."},
-    {"service_key": "seo_management", "service_name": "Search Engine Optimisation (SEO)",
-     "price_range_low": 200000, "price_range_high": 500000, "is_one_time": False, "note": "Tiered monthly retainer."},
+     "price_naira": None, "price_range_low": None, "price_range_high": None, "is_one_time": False, "note": ""},
+    {"service_key": "seo_management", "service_name": "SEO Management",
+     "price_naira": None, "price_range_low": None, "price_range_high": None, "is_one_time": False, "note": ""},
     {"service_key": "performance_marketing", "service_name": "Performance Marketing",
-     "price_range_low": 250000, "price_range_high": 700000, "is_one_time": False, "note": "Tiered monthly retainer. Excludes ad spend."},
+     "price_naira": None, "price_range_low": None, "price_range_high": None, "is_one_time": False, "note": ""},
     {"service_key": "lead_generation", "service_name": "Lead Generation",
-     "price_range_low": 200000, "price_range_high": 600000, "is_one_time": False, "note": "Tiered monthly retainer."},
+     "price_naira": None, "price_range_low": None, "price_range_high": None, "is_one_time": False, "note": ""},
 ]
 
 # ---- App ----
@@ -109,7 +112,9 @@ def deterministic_contact(q: str) -> Optional[str]:
     return None
 
 def deterministic_pricing(q: str) -> Optional[str]:
-    if not PRICING_KW.search(q): return None
+    if not PRICING_KW.search(q):
+        return None
+
     ql = q.lower()
     data = pricing_cache or FALLBACK_PRICING
     kw_map = {
@@ -128,25 +133,57 @@ def deterministic_pricing(q: str) -> Optional[str]:
         "crm": "crm_setup_management",
     }
     key = next((v for k, v in kw_map.items() if k in ql), None)
-    lines: List[str] = []
 
     def fmt(s):
-        if s.get("price_naira"): return f"₦{s['price_naira']:,}"
+        if s.get("price_naira"):
+            return f"₦{s['price_naira']:,}"
         lo, hi = s.get("price_range_low"), s.get("price_range_high")
-        if lo and hi: return f"₦{lo:,} – ₦{hi:,}"
-        return "custom quote"
+        if lo and hi:
+            return f"₦{lo:,} – ₦{hi:,}"
+        return None  # no price set
 
+    # Check whether ANY row has a real price. If not, avoid the wall-of-"custom quote".
+    any_price_set = any(fmt(s) for s in data)
+
+    if not any_price_set:
+        # No prices published — cleaner single message
+        if key:
+            service = next((x for x in data if x.get("service_key") == key), None)
+            name = service["service_name"] if service else "this service"
+            return (
+                f"Pricing for {name} is scoped per project — Victor quotes each "
+                f"engagement individually based on requirements. "
+                f"📞 Click the WhatsApp button (📱) to get a tailored quote."
+            )
+        return (
+            "Victor doesn't publish fixed rates — every project is scoped and quoted "
+            "individually based on requirements. "
+            "📞 Click the WhatsApp button (📱) to discuss your project and get a quote."
+        )
+
+    # Normal path — some/all prices are set
+    lines: List[str] = []
     if key:
         s = next((x for x in data if x.get("service_key") == key), None)
         if s:
+            price_str = fmt(s)
             period = "one-time setup" if s.get("is_one_time", True) else "per month"
-            lines.append(f"{s['service_name']} – {fmt(s)} ({period})")
-            if s.get("note"): lines.append(s["note"])
+            if price_str:
+                lines.append(f"{s['service_name']} – {price_str} ({period})")
+            else:
+                lines.append(f"{s['service_name']} – custom quote ({period})")
+            if s.get("note"):
+                lines.append(s["note"])
+
     if not lines:
         lines.append("Here are Victor's standard pricing ranges:\n")
         for s in data:
+            price_str = fmt(s)
             period = "(one-time)" if s.get("is_one_time", True) else "(per month)"
-            lines.append(f"• {s['service_name']} – {fmt(s)} {period}")
+            if price_str:
+                lines.append(f"• {s['service_name']} – {price_str} {period}")
+            else:
+                lines.append(f"• {s['service_name']} – custom quote {period}")
 
     lines.append("\n📞 For a tailored quote, click the WhatsApp button (📱) to contact Victor.")
     return "\n".join(lines)
@@ -155,11 +192,11 @@ def deterministic_pricing(q: str) -> Optional[str]:
 def vector_search(q: str, top_k: int = TOP_K) -> List[Dict]:
     db = get_supabase()
     if not db: return []
-    
+
     # fastembed returns a generator
     emb_generator = get_embedder().embed([q])
     emb = list(emb_generator)[0].tolist()
-    
+
     res = db.rpc("match_portfolio_chunks", {
         "query_embedding": emb, "match_threshold": THRESHOLD, "match_count": top_k,
     }).execute()
@@ -223,10 +260,10 @@ ANSWER:"""
 async def add_chunk(content: str, source_url: str = "manual"):
     db = get_supabase()
     if not db: raise HTTPException(500, "Database not connected")
-    
+
     emb_generator = get_embedder().embed([content])
     emb = list(emb_generator)[0].tolist()
-    
+
     db.table("portfolio_knowledge").insert({
         "source_url": source_url, "content": content, "embedding": emb,
     }).execute()
