@@ -870,41 +870,56 @@ body.dark-skin .section.hero-started .info-list ul li .value { color: var(--vo-g
 }
 
 /* ==========================================================================
-   Skills Section Fix (Line height, overlapping percentages, spacing)
+   ULTIMATE SKILLS SECTION FIX
+   Overrides theme's tight line-height to prevent overlapping text
    ========================================================================== */
-.skills-item .title {
-  line-height: 1.4 !important;
-  padding-right: 65px; /* Reserve space for the absolute percentage */
-  min-height: 42px; /* Reserve space for two lines */
-  margin-bottom: 8px;
+.skills-item {
+  position: relative !important;
+  margin-bottom: 40px !important;
+}
+
+.skills-item h1, 
+.skills-item h2, 
+.skills-item h3, 
+.skills-item h4, 
+.skills-item h5, 
+.skills-item h6,
+.skills-item .title,
+.skills-item .lui-title {
+  line-height: 1.3 !important;
+  margin-top: 0 !important;
+  margin-bottom: 12px !important;
+  padding-right: 60px !important; /* Reserves space for the percentage on the right */
+  word-break: break-word !important;
+  display: block !important;
+}
+
+.skills-item .value,
+.skills-item .percent,
+.skills-item .num {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  line-height: 1.3 !important;
+  margin-top: 0 !important;
 }
 
 .skills-item .desc {
-  margin-bottom: 16px;
-  line-height: 1.6;
+  line-height: 1.6 !important;
+  margin-bottom: 15px !important;
 }
 
-.skills-item {
-  margin-bottom: 32px;
-}
-
-/* Tablet spacing */
-@media (max-width: 991px) {
-  .skills-item {
-    margin-bottom: 28px;
-  }
-  .skills-item .title {
-    min-height: 40px;
-  }
-}
-
-/* Mobile spacing */
 @media (max-width: 599px) {
   .skills-item {
-    margin-bottom: 24px;
+    margin-bottom: 30px !important;
   }
+  .skills-item h1, 
+  .skills-item h2, 
+  .skills-item h3, 
+  .skills-item h4, 
+  .skills-item h5, 
+  .skills-item h6,
   .skills-item .title {
-    padding-right: 50px;
-    min-height: auto;
+    padding-right: 50px !important;
   }
 }
