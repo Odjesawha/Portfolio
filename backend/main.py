@@ -9,11 +9,11 @@ from sentence_transformers import SentenceTransformer
 from groq import Groq
 from supabase import create_client, Client
 
-# ---- Config ----
-GROQ_API_KEY    = os.environ["GROQ_API_KEY"]
+# ---- Config (Changed to .get() so it doesn't crash if missing) ----
+GROQ_API_KEY    = os.environ.get("GROQ_API_KEY", "")
 GROQ_MODEL      = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
-SUPABASE_URL    = os.environ["SUPABASE_URL"]
-SUPABASE_KEY    = os.environ["SUPABASE_KEY"]
+SUPABASE_URL    = os.environ.get("SUPABASE_URL", "")
+SUPABASE_KEY    = os.environ.get("SUPABASE_KEY", "")
 WHATSAPP_NUMBER = os.environ.get("WHATSAPP_NUMBER", "+2347067666205")
 PRODUCTION_HOST = os.environ.get("PRODUCTION_HOST", "")
 THRESHOLD       = float(os.environ.get("SIMILARITY_THRESHOLD", "0.15"))
@@ -70,6 +70,9 @@ def get_embedder():
 def get_supabase():
     global _supabase
     if _supabase is None:
+        if not SUPABASE_URL or not SUPABASE_KEY:
+            logger.error("Supabase credentials missing!")
+            return None
         _supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
     return _supabase
 
@@ -148,8 +151,10 @@ def deterministic_pricing(q: str) -> Optional[str]:
 
 # ---- Retrieval ----
 def vector_search(q: str, top_k: int = TOP_K) -> List[Dict]:
+    db = get_supabase()
+    if not db: return []
     emb = get_embedder().encode([q], convert_to_numpy=True)[0].tolist()
-    res = get_supabase().rpc("match_portfolio_chunks", {
+    res = db.rpc("match_portfolio_chunks", {
         "query_embedding": emb, "match_threshold": THRESHOLD, "match_count": top_k,
     }).execute()
     return res.data or []
@@ -188,6 +193,8 @@ QUESTION: {q}
 ANSWER:"""
 
     try:
+        if not GROQ_API_KEY:
+            raise ValueError("GROQ_API_KEY is missing.")
         client = Groq(api_key=GROQ_API_KEY)
         resp = client.chat.completions.create(
             model=GROQ_MODEL,
@@ -208,8 +215,10 @@ ANSWER:"""
 
 # ---- Knowledge admin ----
 async def add_chunk(content: str, source_url: str = "manual"):
+    db = get_supabase()
+    if not db: raise HTTPException(500, "Database not connected")
     emb = get_embedder().encode([content], convert_to_numpy=True)[0].tolist()
-    get_supabase().table("portfolio_knowledge").insert({
+    db.table("portfolio_knowledge").insert({
         "source_url": source_url, "content": content, "embedding": emb,
     }).execute()
 
@@ -236,19 +245,24 @@ async def add_knowledge(req: ManualChunkRequest):
 
 @app.get("/api/knowledge/list")
 async def list_knowledge(limit: int = 50):
-    data = get_supabase().table("portfolio_knowledge")\
+    db = get_supabase()
+    if not db: return {"count": 0, "chunks": []}
+    data = db.table("portfolio_knowledge")\
         .select("id,source_url,content,created_at").limit(limit).execute().data
     return {"count": len(data or []), "chunks": data or []}
 
 @app.delete("/api/knowledge/delete")
 async def delete_knowledge(req: DeleteChunkRequest):
-    get_supabase().table("portfolio_knowledge").delete().eq("id", req.chunk_id).execute()
+    db = get_supabase()
+    if db:
+        db.table("portfolio_knowledge").delete().eq("id", req.chunk_id).execute()
     return {"message": f"deleted {req.chunk_id}"}
 
 @app.post("/api/admin/reembed")
 async def reembed(bg: BackgroundTasks):
     async def work():
         db, model = get_supabase(), get_embedder()
+        if not db: return
         rows = db.table("portfolio_knowledge").select("id,content").execute().data or []
         for r in rows:
             emb = model.encode([r["content"]], convert_to_numpy=True)[0].tolist()
@@ -264,11 +278,14 @@ async def health():
 @app.on_event("startup")
 async def startup():
     global pricing_cache
-    get_embedder()  # warm up
+    # REMOVED get_embedder() here to prevent Render from timing out / OOMing.
     try:
-        pricing_cache = get_supabase().table("service_pricing")\
-            .select("*").eq("is_active", True).execute().data or []
+        db = get_supabase()
+        if db:
+            # Using a quick timeout so startup doesn't block the port binding
+            pricing_cache = db.table("service_pricing")\
+                .select("*").eq("is_active", True).execute().data or []
     except Exception as e:
         logger.warning(f"pricing load failed: {e}")
         pricing_cache = FALLBACK_PRICING
-    logger.info(f"Startup complete. {len(pricing_cache)} pricing rows.")
+    logger.info(f"Startup complete. {len(pricing_cache)} pricing rows. Port should open now.")
