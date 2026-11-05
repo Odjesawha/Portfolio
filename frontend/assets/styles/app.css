@@ -45,6 +45,10 @@ body.dark-skin {
   object-fit: cover;
   object-position: center 22%;
 }
+.section.hero-started .slide img.vo-hero-portrait {
+  object-fit: contain;
+  object-position: center bottom;
+}
 
 /* Placeholder artwork is intentionally flat, keep it from looking broken -- */
 img[src*="/assets/img/placeholder-"] {
