@@ -240,7 +240,7 @@
     },
     {
       re: /(service|what.*do|help|offer|consult|growth|marketing)/i,
-      a: "Victor is a Lagos-based digital marketing manager. He handles SEO, Google and Meta Ads, social media management, content and video production, email marketing, web builds on WordPress and Shopify, and GA4 reporting.\n\nMost clients start with one channel and expand once the numbers make sense.",
+      a: "Victor is a Lagos-based digital & growth marketing executive. He handles SEO, Google and Meta Ads, social media management, content and video production, email marketing, web builds on WordPress and Shopify, and GA4 reporting.\n\nMost clients start with one channel and expand once the numbers make sense.",
     },
     {
       re: /(experience|background|cv|resume|worked|career|years)/i,
